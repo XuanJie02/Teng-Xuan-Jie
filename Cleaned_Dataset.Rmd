@@ -1,0 +1,30 @@
+---
+title: "Big Data"
+output: html_document
+date: "2023-08-04"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+library(tidyverse)
+library(tm)
+library(stringr)
+data <- read.csv("/Users/jaydenteng/Downloads/hotelreviews.csv", stringsAsFactors = FALSE)
+column_data <- data$Negative_Review
+
+data$Negative_Review <- tolower(data$Negative_Review)
+
+# Remove punctuation and special characters
+data$Negative_Review <- str_replace_all(data$Negative_Review, "[^a-zA-Z ]", "")
+
+# Remove leading and trailing whitespaces
+data$Negative_Review <- str_trim(data$Negative_Review)
+
+# Remove stopwords (commonly used words with little meaning)
+stopwords("english") -> en_stopwords
+data$Negative_Review <- removeWords(data$Negative_Review, en_stopwords)
+
+write.csv(data$Negative_Review, file = "cleaned_negative_reviews.csv", row.names = FALSE)
+
