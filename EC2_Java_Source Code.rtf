@@ -6,22 +6,34 @@
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
 \f0\fs24 \cf0 \
-
+# Change directory 
 \f1\fs26 hadoop@ip-172-31-31-2:~/IST3134$ cd ~/workspace/wordcount/src\
 \
+# Retrieve the classpath that is necessary for the functioning of Hadoop
 hadoop@ip-172-31-31-2:~/workspace/wordcount/src$ hadoop classpath\
 \
 /home/hadoop/hadoop-3.2.2/etc/hadoop:/home/hadoop/hadoop-3.2.2/share/hadoop/common/lib/*:/home/hadoop/hadoop-3.2.2/share/hadoop/common/*:/home/hadoop/hadoop-3.2.2/share/hadoop/hdfs:/home/hadoop/hadoop-3.2.2/share/hadoop/hdfs/lib/*:/home/hadoop/hadoop-3.2.2/share/hadoop/hdfs/*:/home/hadoop/hadoop-3.2.2/share/hadoop/mapreduce/lib/*:/home/hadoop/hadoop-3.2.2/share/hadoop/mapreduce/*:/home/hadoop/hadoop-3.2.2/share/hadoop/yarn:/home/hadoop/hadoop-3.2.2/share/hadoop/yarn/lib/*:/home/hadoop/hadoop-3.2.2/share/hadoop/yarn/*\
 \
+# Compiles the Java files located in the "stubs" directory 
 hadoop@ip-172-31-31-2:~/workspace/wordcount/src$ javac -classpath `hadoop classpath` stubs/*.java\
 \
 Note: stubs/WordCount.java uses or overrides a deprecated API.\
 Note: Recompile with -Xlint:deprecation for details.\
 \
+# Creates a JAR (Java Archive) file named "wc.jar"
 hadoop@ip-172-31-31-2:~/workspace/wordcount/src$ jar cvf wc.jar stubs/*.class\
 added manifest\
 adding: stubs/SumReducer.class(in = 1596) (out= 672)(deflated 57%)\
 adding: stubs/WordCount.class(in = 1538) (out= 843)(deflated 45%)\
 adding: stubs/WordMapper.class(in = 1705) (out= 711)(deflated 58%)\
 \
-hadoop@ip-172-31-31-2:~/workspace/wordcount/src$ hadoop jar wc.jar stubs.WordCount cleaned_negative_reviews.csv wordcounts}
+# Execute MapReduce Job
+hadoop@ip-172-31-31-2:~/workspace/wordcount/src$ hadoop jar wc.jar stubs.WordCount cleaned_negative_reviews.csv wordcounts
+
+# Review the result of the MapReduce job
+hadoop@ip-172-31-31-2:~/workspace/wordcount/src$ hadoop fs -ls wordcounts
+Found 2 items
+-rw-r--r--   2 hadoop supergroup          0 2023-08-07 08:55 wordcounts/_SUCCESS
+-rw-r--r--   2 hadoop supergroup     560177 2023-08-07 08:55 wordcounts/part-r-00000
+# View Map Reduce Results
+hadoop@ip-172-31-31-2:~/workspace/wordcount/src$ hadoop fs -cat wordcounts/part-r-00000 | less
